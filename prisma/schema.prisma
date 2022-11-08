@@ -8,18 +8,20 @@ generator client {
 }
 
 model User {
-  id        String  @id @default(cuid())
-  email     String  @unique
+  id        String    @id @default(cuid())
+  email     String    @unique
+  password  Password?
   firstName String?
   lastName  String?
   nickname  String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  role      UserRole  @default(USER)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  password Password?
-  rides    Ride[]
-  role     UserRole
+  clubs            Club[]
+  joinedRides      Ride[]            @relation(name: "joinedRides")
+  createdRides     Ride[]            @relation(name: "createdRides")
+  clubJoinRequests ClubJoinRequest[]
 }
 
 enum UserRole {
@@ -36,20 +38,58 @@ model Password {
 }
 
 model Ride {
-  id   String  @id @default(cuid())
-  name String?
+  id          String  @id @default(cuid())
+  name        String?
+  description String?
+  riders      User[]  @relation("joinedRides")
+  creator     User    @relation(name: "createdRides", fields: [creatorId], references: [id])
+  creatorId   String
 
-  startsAt DateTime?
-  startLat Float?
-  startLon Float?
-  endLat   Float?
-  endLon   Float?
+  startsAt  DateTime?
+  duration  Int?
+  distance  Float?
+  startLat  Float?
+  startLon  Float?
+  endLat    Float?
+  endLon    Float?
+  club      Club?     @relation(fields: [clubId], references: [id])
+  clubId    String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Club {
+  id           String            @id @default(cuid())
+  name         String
+  description  String?
+  city         String?
+  state        String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  isPrivate    Boolean           @default(false)
+  members      User[]
+  rides        Ride[]
+  joinRequests ClubJoinRequest[]
+}
 
-  createdBy User   @relation(fields: [userId], references: [id])
+model ClubJoinRequest {
+  id        String                @id @default(cuid())
+  user      User                  @relation(fields: [userId], references: [id])
   userId    String
+  club      Club                  @relation(fields: [clubId], references: [id])
+  clubId    String
+  status    ClubJoinRequestStatus
+  closedOn  DateTime?
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+
+  @@unique([userId, clubId])
+}
+
+enum ClubJoinRequestStatus {
+  SENT
+  APPROVED
+  REJECTED
 }
 
 model Note {

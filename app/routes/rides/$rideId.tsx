@@ -22,6 +22,10 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 export default function RidePage() {
   const { ride } = useLoaderData<LoaderData>();
-  console.log(ride);
-  return <h1>Ride Page</h1>;
+  return (
+    <div>
+      <h1>Ride Page</h1>
+      <p>Viewing ride {ride.id}</p>
+    </div>
+  );
 }

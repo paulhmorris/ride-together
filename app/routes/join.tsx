@@ -1,11 +1,11 @@
 import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
+import { Form, useActionData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
 
 import { createUserSession, getUserId } from "~/session.server";
 
-import { Button, Input } from "~/components";
+import { Button, Input, Link } from "~/components/common";
 import { safeRedirect, validateEmail } from "~/lib/utils";
 import { createUser, getUserByEmail } from "~/models/user.server";
 
@@ -89,6 +89,7 @@ export default function Join() {
   return (
     <div className="flex min-h-full flex-col justify-center">
       <div className="mx-auto w-full max-w-md px-8">
+        <h1 className="mb-4">Sign up</h1>
         <Form method="post" className="space-y-6" noValidate>
           <div className="mt-1">
             <Input

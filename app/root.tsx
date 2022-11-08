@@ -1,17 +1,14 @@
-import type { User } from "@prisma/client";
 import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
-  Form,
   Links,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
 } from "@remix-run/react";
-import { Button, Link } from "./components";
+import { Header } from "~/components/common";
 
 import { getUser } from "./session.server";
 import tailwindStylesheetUrl from "./styles/tailwind.css";
@@ -39,35 +36,15 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="relative h-full">
-        <Outlet />
+      <body className="relative h-full bg-neutral-50 text-slate-800">
+        <Header />
+        <div className="min-h-full w-full px-8 pt-8 pb-24">
+          <Outlet />
+        </div>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
-        <Footer />
       </body>
     </html>
   );
 }
-
-const Footer = () => {
-  const { user } = useLoaderData<{ user: User | null }>();
-  return (
-    <footer className="fixed inset-x-0 bottom-4 text-center text-sm text-gray-500">
-      {user ? (
-        <div className="flex justify-center">
-          <span>
-            {user.email} | {user.role.toLowerCase()} |
-          </span>
-          <Form action="/logout" method="post">
-            <Button className="ml-1" variant="link" type="submit">
-              Logout
-            </Button>
-          </Form>
-        </div>
-      ) : (
-        <Link to="/login">Log in</Link>
-      )}
-    </footer>
-  );
-};

@@ -1,8 +1,8 @@
 import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
+import { Form, useActionData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
-import { Button, Input } from "~/components";
+import { Button, Input, Link } from "~/components/common";
 
 import { safeRedirect, validateEmail } from "~/lib/utils";
 import { verifyLogin } from "~/models/user.server";
@@ -67,7 +67,7 @@ export const meta: MetaFunction = () => {
 
 export default function LoginPage() {
   const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/notes";
+  const redirectTo = searchParams.get("redirectTo") || "/";
   const actionData = useActionData<typeof action>();
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
@@ -83,6 +83,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-full flex-col justify-center">
       <div className="mx-auto w-full max-w-md px-8">
+        <h1 className="mb-4">Login</h1>
         <Form method="post" className="space-y-6" noValidate>
           <div className="mt-1">
             <Input

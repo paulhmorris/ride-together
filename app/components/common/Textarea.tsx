@@ -2,30 +2,30 @@ import type { ComponentPropsWithoutRef } from "react";
 import { forwardRef } from "react";
 import { classNames } from "~/lib/utils";
 
-interface InputProps extends ComponentPropsWithoutRef<"input"> {
+interface TextareaProps extends ComponentPropsWithoutRef<"textarea"> {
   name: string;
   label: string;
   fieldError?: string | null | undefined;
 }
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(
+export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ name, label, fieldError, ...props }, ref) => {
     return (
       <div>
-        <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+        <label htmlFor={name} className="block text-sm font-medium">
           {label}
         </label>
         <div className="mt-1">
-          <input
+          <textarea
             {...props}
             ref={ref ?? null}
             id={name}
             name={name}
-            type={props.type ?? "text"}
+            rows={6}
             aria-invalid={fieldError ? true : undefined}
             aria-describedby={`${name}-error`}
             className={classNames(
-              "block w-full rounded-md border-gray-300 shadow-sm transition duration-75 placeholder:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 disabled:pointer-events-none disabled:opacity-50",
+              "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
               props.className
             )}
           />
@@ -40,4 +40,4 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-Input.displayName = "Input";
+Textarea.displayName = "Textarea";
