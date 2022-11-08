@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker";
+import { randEmail } from "@ngneat/falso";
 
 declare global {
   namespace Cypress {
@@ -43,7 +43,7 @@ declare global {
 }
 
 function login({
-  email = faker.internet.email(undefined, undefined, "example.com"),
+  email = randEmail({ provider: "example", suffix: "com" }),
 }: {
   email?: string;
 } = {}) {
