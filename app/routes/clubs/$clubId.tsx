@@ -7,6 +7,7 @@ import invariant from "tiny-invariant";
 import {
   ClubDescription,
   ClubMembers,
+  ClubPastRides,
   ClubRides,
   ClubTitle,
 } from "~/components/clubs";
@@ -61,6 +62,9 @@ export default function ClubPage() {
           </Tab.Panel>
           <Tab.Panel>
             <ClubMembers club={club} />
+          </Tab.Panel>
+          <Tab.Panel>
+            <ClubPastRides />
           </Tab.Panel>
         </Tab.Panels>
       </Tab.Group>
