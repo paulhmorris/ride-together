@@ -2,7 +2,7 @@ import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useActionData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
-import { Button, Input, Link } from "~/components/common";
+import { Button, Checkbox, Input, Link } from "~/components/common";
 
 import { safeRedirect, validateEmail } from "~/lib/utils";
 import { verifyLogin } from "~/models/user.server";
@@ -81,8 +81,8 @@ export default function LoginPage() {
   }, [actionData]);
 
   return (
-    <div className="flex min-h-full flex-col justify-center">
-      <div className="mx-auto w-full max-w-md px-8">
+    <main className="flex flex-grow flex-col items-center justify-center">
+      <div className="mx-auto w-full max-w-md">
         <h1 className="mb-4">Login</h1>
         <Form method="post" className="space-y-6" noValidate>
           <div className="mt-1">
@@ -95,12 +95,8 @@ export default function LoginPage() {
               aria-invalid={actionData?.errors?.email ? true : undefined}
               required
               autoFocus={true}
+              fieldError={actionData?.errors?.email}
             />
-            {actionData?.errors?.email && (
-              <div className="pt-1 text-red-700" id="email-error">
-                {actionData.errors.email}
-              </div>
-            )}
           </div>
 
           <div className="mt-1">
@@ -112,12 +108,8 @@ export default function LoginPage() {
               autoComplete="new-password"
               aria-invalid={actionData?.errors?.password ? true : undefined}
               required
+              fieldError={actionData?.errors?.password}
             />
-            {actionData?.errors?.password && (
-              <div className="pt-1 text-red-700" id="password-error">
-                {actionData.errors.password}
-              </div>
-            )}
           </div>
 
           <input type="hidden" name="redirectTo" value={redirectTo} />
@@ -126,20 +118,7 @@ export default function LoginPage() {
           </Button>
 
           <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember"
-                name="remember"
-                type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <label
-                htmlFor="remember"
-                className="ml-2 block text-sm text-gray-900"
-              >
-                Remember me
-              </label>
-            </div>
+            <Checkbox name="remember" label="Remember me" />
             <div className="text-center text-sm text-gray-500">
               Don't have an account?{" "}
               <Link to={{ pathname: "/join", search: searchParams.toString() }}>
@@ -149,6 +128,6 @@ export default function LoginPage() {
           </div>
         </Form>
       </div>
-    </div>
+    </main>
   );
 }

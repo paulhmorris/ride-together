@@ -1,9 +1,8 @@
 import type { Prisma } from "@prisma/client";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import { Button, Checkbox, Input, Textarea } from "~/components/common";
+import { NewClubForm } from "~/components/clubs";
 import { createClub } from "~/models/club.server";
 import { requireUserId } from "~/session.server";
 
@@ -12,18 +11,25 @@ export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const name = formData.get("name");
   const description = formData.get("description");
-  const isPublic = formData.get("isPublic");
+  const city = formData.get("city");
+  const state = formData.get("state");
+  const isPrivate = formData.get("isPrivate") === "true" ? true : false;
 
   invariant(typeof name === "string", "Expected name to be string");
   invariant(
     typeof description === "string",
     "Expected description to be string"
   );
-  invariant(typeof isPublic === "string", "Expected isPublic to be string");
+  invariant(typeof city === "string", "Expected city to be string");
+  invariant(typeof state === "string", "Expected state to be string");
+  invariant(typeof isPrivate === "boolean", "Expected isPrivate to be string");
 
   const clubData: Prisma.ClubUncheckedCreateInput = {
     name,
+    state,
     description,
+    isPrivate,
+    city,
   };
 
   const club = await createClub(userId, { ...clubData });
@@ -40,14 +46,7 @@ export default function NewRide() {
     <main className="flex justify-center">
       <div className="w-full max-w-lg flex-auto">
         <h1 className="mb-8">New Club</h1>
-        <Form className="space-y-4" method="post">
-          <Input name="name" label="Name" required />
-          <Textarea name="description" label="Description" required />
-          <Checkbox name="isPrivate" label="Make Private" required />
-          <Button type="submit" className="w-full">
-            Create
-          </Button>
-        </Form>
+        <NewClubForm />
       </div>
     </main>
   );

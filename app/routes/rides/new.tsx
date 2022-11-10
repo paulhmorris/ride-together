@@ -1,7 +1,7 @@
 import type { Club, Prisma } from "@prisma/client";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, Link, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { Button, Input, Select } from "~/components/common";
 import { prisma } from "~/db.server";
@@ -49,23 +49,43 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function NewRide() {
   const { clubs } = useLoaderData<LoaderData>();
   return (
-    <>
-      <h1>New Ride</h1>
-      <Form className="flex max-w-sm flex-col gap-4" method="post">
-        <Input name="name" label="Ride Name" />
-        <Input name="startsAt" label="Select start" type="datetime-local" />
-        <Input name="duration" label="Est Duration (minutes)" />
-        <Input name="distance" label="Est Distance (miles)" />
-        <Select label="Club" name="club" id="club" defaultValue="">
-          <option value="">None</option>
-          {clubs.map((club) => (
-            <option key={club.id} value={club.id}>
-              {club.name}
-            </option>
-          ))}
-        </Select>
-        <Button type="submit">Create</Button>
-      </Form>
-    </>
+    <main className="flex justify-center">
+      <div className="w-full max-w-lg flex-auto">
+        <h1 className="mb-8">New Ride</h1>
+        <Form className="space-y-4" method="post">
+          <Input name="name" label="Ride Name" />
+          <Input name="startsAt" label="Select start" type="datetime-local" />
+          <Input name="duration" label="Est Duration (minutes)" />
+          <Input name="distance" label="Est Distance (miles)" />
+          <div>
+            <Select
+              disabled={clubs.length === 0}
+              label="Club"
+              name="club"
+              id="club"
+              defaultValue=""
+            >
+              <option value="">None</option>
+              {clubs.map((club) => (
+                <option key={club.id} value={club.id}>
+                  {club.name}
+                </option>
+              ))}
+            </Select>
+            {clubs.length === 0 && (
+              <Link
+                to="/clubs"
+                className="p-1 text-sm text-gray-500 hover:text-indigo-700"
+              >
+                Find a club near you!
+              </Link>
+            )}
+          </div>
+          <Button type="submit" className="w-full">
+            Create
+          </Button>
+        </Form>
+      </div>
+    </main>
   );
 }
