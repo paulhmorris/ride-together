@@ -48,15 +48,24 @@ model Ride {
   startsAt  DateTime?
   duration  Int?
   distance  Float?
-  startLat  Float?
-  startLon  Float?
-  endLat    Float?
-  endLon    Float?
+  // pace      Pace      @relation(fields: [paceId], references: [id])
+  // paceId    Int
   club      Club?     @relation(fields: [clubId], references: [id])
   clubId    String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+  coords Unsupported("geometry(Point, 4326)")?
+
+  @@index([coords], name: "location_idx", type: Gist)
 }
+
+// model Pace {
+//   id         Int    @id @default(autoincrement())
+//   speedRange String
+//   avgSpeed   Int
+//   rides      Ride[]
+// }
 
 model Club {
   id           String            @id @default(cuid())
