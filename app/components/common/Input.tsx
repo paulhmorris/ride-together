@@ -7,16 +7,23 @@ interface InputProps extends ComponentPropsWithoutRef<"input"> {
   label: string;
   description?: string;
   fieldError?: string | null | undefined;
+  hideLabel?: boolean;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ name, label, description, fieldError, ...props }, ref) => {
+  ({ name, label, description, fieldError, hideLabel, ...props }, ref) => {
     return (
       <div>
-        <label htmlFor={name} className="block text-sm font-medium">
+        <label
+          htmlFor={name}
+          className={classNames(
+            "block text-sm font-medium",
+            hideLabel && "sr-only"
+          )}
+        >
           {label}
         </label>
-        <div className="mt-1">
+        <div className={`${hideLabel ? "" : "mt-1"}`}>
           <input
             {...props}
             ref={ref ?? null}
@@ -26,7 +33,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             aria-invalid={fieldError ? true : undefined}
             aria-describedby={`${name}-error ${name}-description`}
             className={classNames(
-              "block w-full rounded-md border-gray-200 shadow-sm transition duration-75 placeholder:text-gray-300 focus:border-indigo-300 focus:ring-2 focus:ring-indigo-500 disabled:pointer-events-none disabled:opacity-50",
+              "block w-full rounded-md border border-gray-200 shadow-sm transition duration-75 placeholder:text-gray-300 focus:border-indigo-300 focus:ring-2 focus:ring-indigo-500 disabled:pointer-events-none disabled:opacity-50",
               fieldError && "focus:border-red-600 focus:ring-red-600",
               props.className
             )}

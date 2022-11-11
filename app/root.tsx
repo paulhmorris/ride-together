@@ -1,14 +1,14 @@
-import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
+import type {
+  ErrorBoundaryComponent,
+  LinksFunction,
+  LoaderArgs,
+  MetaFunction,
+} from "@remix-run/node";
 import { json } from "@remix-run/node";
-import {
-  Links,
-  LiveReload,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "@remix-run/react";
-import { Header } from "~/components/common";
+import { Outlet, useCatch } from "@remix-run/react";
+import { Page404, Page500, UnknownError } from "~/components/common";
+import { Document } from "./components/Document";
+import { RootLayout } from "./components/layouts/RootLayout";
 
 import { getUser } from "./session.server";
 import tailwindStylesheetUrl from "./styles/tailwind.css";
@@ -44,20 +44,37 @@ export async function loader({ request }: LoaderArgs) {
 
 export default function App() {
   return (
-    <html lang="en" className="h-full">
-      <head>
-        <Meta />
-        <Links />
-      </head>
-      <body className="relative flex min-h-full flex-col bg-white font-inter text-slate-800">
-        <Header />
-        <div className="flex h-full flex-grow flex-col px-8 pt-32 pb-24">
-          <Outlet />
-        </div>
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </body>
-    </html>
+    <Document>
+      <RootLayout>
+        <Outlet />
+      </RootLayout>
+    </Document>
   );
 }
+
+export function CatchBoundary() {
+  const { status } = useCatch();
+  return (
+    <Document>
+      <RootLayout>
+        {status === 404 ? (
+          <Page404 />
+        ) : status === 500 ? (
+          <Page500 />
+        ) : (
+          <UnknownError />
+        )}
+      </RootLayout>
+    </Document>
+  );
+}
+
+export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
+  return (
+    <Document>
+      <RootLayout>
+        <UnknownError error={error} />
+      </RootLayout>
+    </Document>
+  );
+};

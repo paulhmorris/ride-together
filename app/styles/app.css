@@ -11,7 +11,7 @@
   }
 
   h1 {
-    @apply text-5xl font-bold;
+    @apply text-5xl font-extrabold;
   }
 
   h2 {

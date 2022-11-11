@@ -74,3 +74,15 @@ export function validateEmail(email: unknown): email is string {
 export function classNames(...classes: unknown[]): string {
   return classes.filter(Boolean).join(" ");
 }
+
+export function getPosition(): Promise<GeolocationPosition> {
+  return new Promise((resolve, reject) => {
+    if (navigator && "geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        resolve(position);
+      });
+    } else {
+      reject({ error: "Geolocation is unavailable" });
+    }
+  });
+}

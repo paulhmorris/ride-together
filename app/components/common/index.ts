@@ -1,3 +1,5 @@
+export { Page404 } from "./404";
+export { Page500 } from "./500";
 export { Button } from "./Button";
 export { Checkbox } from "./Checkbox";
 export { Header } from "./Header";
@@ -6,3 +8,4 @@ export { Link } from "./Link";
 export { Select } from "./Select";
 export { TabTitle } from "./TabTitle";
 export { Textarea } from "./Textarea";
+export { UnknownError } from "./UnknownError";
