@@ -7,8 +7,8 @@
   - You are about to drop the column `startLon` on the `Ride` table. All the data in the column will be lost.
 
 */
--- create postgis extension
-CREATE EXTENSION postgis;
+-- Add PostGIS
+CREATE EXTENSION IF NOT EXISTS postgis;
 
 -- AlterTable
 ALTER TABLE "Ride" DROP COLUMN "endLat",
