@@ -87,8 +87,8 @@ export default function Join() {
   }, [actionData]);
 
   return (
-    <div className="flex min-h-full flex-col justify-center">
-      <div className="mx-auto w-full max-w-md px-8">
+    <main className="flex flex-grow flex-col items-center justify-center">
+      <div className="mx-auto w-full max-w-md">
         <h1 className="mb-4">Sign up</h1>
         <Form method="post" className="space-y-6" noValidate>
           <div className="mt-1">
@@ -101,12 +101,8 @@ export default function Join() {
               aria-invalid={actionData?.errors?.email ? true : undefined}
               required
               autoFocus={true}
+              fieldError={actionData?.errors?.email}
             />
-            {actionData?.errors?.email && (
-              <div className="pt-1 text-red-700" id="email-error">
-                {actionData.errors.email}
-              </div>
-            )}
           </div>
 
           <div className="mt-1">
@@ -118,12 +114,8 @@ export default function Join() {
               autoComplete="new-password"
               aria-invalid={actionData?.errors?.password ? true : undefined}
               required
+              fieldError={actionData?.errors?.password}
             />
-            {actionData?.errors?.password && (
-              <div className="pt-1 text-red-700" id="password-error">
-                {actionData.errors.password}
-              </div>
-            )}
           </div>
 
           <input type="hidden" name="redirectTo" value={redirectTo} />
@@ -142,6 +134,6 @@ export default function Join() {
           </div>
         </Form>
       </div>
-    </div>
+    </main>
   );
 }

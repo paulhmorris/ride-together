@@ -37,14 +37,7 @@ async function seed() {
     },
   });
 
-  await prisma.user.create({
-    data: {
-      email: "admin@remix.run",
-      firstName: "Admin",
-      role: "ADMIN",
-      password: { create: { hash: hashedPassword } },
-    },
-  });
+  await prisma.ride.deleteMany();
 
   for (let i = 0; i < 100; i++) {
     await prisma.ride.create({

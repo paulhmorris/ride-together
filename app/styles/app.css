@@ -3,6 +3,13 @@
 @tailwind utilities;
 
 @layer base {
+  @font-face {
+    font-family: "Inter";
+    src: url("../../public/Inter.ttf") format("truetype");
+    font-weight: 100 1000;
+    font-stretch: 25% 151%;
+  }
+
   h1 {
     @apply text-5xl font-bold;
   }

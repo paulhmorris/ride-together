@@ -30,3 +30,18 @@ export async function leaveRide(userId: User["id"], rideId: Ride["id"]) {
     },
   });
 }
+
+export async function getNearbyRides(
+  longitude: string,
+  latitude: string,
+  radius?: number
+) {
+  const point = `POINT(${longitude} ${latitude})`;
+  return await prisma.$queryRaw<{ id: string; distance: string }[]>`
+    SELECT r.Id,
+      ST_Distance(r.coords, ${point}::geography)::text distance
+    FROM "Ride" r
+    WHERE ST_DWithin(r.coords, ${point}::geography, ${radius ? radius : 100000})
+    ORDER BY r.coords <-> ${point}::geography;
+  `;
+}
