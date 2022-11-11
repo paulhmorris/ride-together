@@ -5,7 +5,6 @@ import { useCatch, useLoaderData } from "@remix-run/react";
 import { Page404, Page500, UnknownError } from "~/components/common";
 import { Rides, RidesHeader } from "~/components/rides";
 import { prisma } from "~/db.server";
-import { getNearbyRides } from "~/models/ride.server";
 
 export type RideWithClubAndRiders = {
   rides: (Ride & {
@@ -23,17 +22,18 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   if (typeof longitude === "string" && typeof latitude === "string") {
     // TODO: Update when PostGIS support comes native in Prisma
-    const nearbyRides = await getNearbyRides(latitude, longitude);
-    if (nearbyRides.length === 0) {
-      return json({ rides: null });
-    }
+    // const nearbyRides = await getNearbyRides(latitude, longitude);
+    // if (nearbyRides.length === 0) {
+    //   return json({ rides: null });
+    // }
     const rides = await prisma.ride.findMany({
-      where: {
-        id: {
-          in: nearbyRides.map((r) => r.id),
-        },
-      },
+      // where: {
+      //   id: {
+      //     in: nearbyRides.map((r) => r.id),
+      //   },
+      // },
       include: { club: true, riders: true },
+      take: 10,
     });
     return json({ rides });
   }

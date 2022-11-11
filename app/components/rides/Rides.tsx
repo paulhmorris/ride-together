@@ -20,7 +20,7 @@ export function Rides({ rides }: RideWithClubAndRiders) {
       <p className="mt-12 text-center text-lg text-gray-500">
         Type in a zipcode or use your location to find nearby rides. <br />
         <span className="inline-flex items-center">
-          Your location data will not be stored or sold{" "}
+          Your location data is not stored or sold{" "}
           <HeartIcon className="ml-1 inline h-4 w-4" />
         </span>
       </p>
@@ -28,7 +28,7 @@ export function Rides({ rides }: RideWithClubAndRiders) {
   }
 
   return (
-    <ul className="w-full max-w-4xl space-y-4">
+    <ul className="grid w-full max-w-5xl gap-8 sm:grid-cols-3">
       {rides.map((ride) => (
         <Ride key={ride.id} ride={ride} />
       ))}
