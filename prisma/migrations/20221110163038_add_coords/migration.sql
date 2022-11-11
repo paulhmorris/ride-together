@@ -8,7 +8,7 @@
 
 */
 -- create postgis extension
-CREATE EXTENSION IF NOT EXISTS postgis;
+CREATE EXTENSION postgis;
 
 -- AlterTable
 ALTER TABLE "Ride" DROP COLUMN "endLat",
