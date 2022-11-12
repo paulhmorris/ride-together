@@ -4,9 +4,12 @@ import {
   randCompanyName,
   randFloat,
   randFutureDate,
+  randLatitude,
+  randLongitude,
   randNumber,
   randParagraph,
   randPastDate,
+  randSentence,
   randStateAbbr,
   randText,
 } from "@ngneat/falso";
@@ -21,9 +24,11 @@ async function seed() {
   const lastName = "Admin";
 
   // cleanup the existing database
-  await prisma.user.deleteMany().catch(() => {
-    // no worries if it doesn't exist yet
-  });
+  const user = await prisma.user.delete({ where: { email } }).catch(() => {});
+  console.log(user);
+
+  await prisma.ride.deleteMany().catch(() => {});
+  await prisma.club.deleteMany().catch(() => {});
 
   const hashedPassword = await bcrypt.hash("password", 10);
 
@@ -37,27 +42,27 @@ async function seed() {
     },
   });
 
-  await prisma.user.create({
-    data: {
-      email: "admin@remix.run",
-      firstName: "Admin",
-      role: "ADMIN",
-      password: { create: { hash: hashedPassword } },
-    },
-  });
-
   for (let i = 0; i < 100; i++) {
-    await prisma.ride.create({
+    const ride = await prisma.ride.create({
       data: {
         name: randText(),
         startsAt: randBoolean() ? randFutureDate() : randPastDate(),
         distance: randFloat({ min: 10, max: 50, fraction: 1 }),
         duration: randNumber({ min: 60, max: 180 }),
+        description: randSentence(),
         creator: {
           connect: { id: superAdmin.id },
         },
       },
     });
+
+    const lon = randLongitude();
+    const lat = randLatitude();
+    await prisma.$queryRaw`
+      UPDATE "Ride"
+      SET coords = ST_MakePoint(${lon}, ${lat})
+      WHERE Id = ${ride.id}
+    `;
     await prisma.club.create({
       data: {
         name: randCompanyName(),

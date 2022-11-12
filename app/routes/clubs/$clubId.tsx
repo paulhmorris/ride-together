@@ -1,4 +1,5 @@
 import { Tab } from "@headlessui/react";
+import { ClockIcon, HomeIcon, UserGroupIcon } from "@heroicons/react/24/solid";
 import type { Club, Ride, User } from "@prisma/client";
 import type { LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
@@ -51,9 +52,15 @@ export default function ClubPage() {
       <ClubTitle club={club} />
       <Tab.Group>
         <Tab.List className="mb-4 flex gap-4 border-b border-gray-200 pb-2">
-          <TabTitle title="Overview" />
-          <TabTitle title="Members" />
-          <TabTitle title="Past Rides" />
+          <TabTitle title="Overview" icon={<HomeIcon className="h-4 w-4" />} />
+          <TabTitle
+            title="Members"
+            icon={<UserGroupIcon className="h-4 w-4" />}
+          />
+          <TabTitle
+            title="Past Rides"
+            icon={<ClockIcon className="h-4 w-4" />}
+          />
         </Tab.List>
         <Tab.Panels>
           <Tab.Panel>

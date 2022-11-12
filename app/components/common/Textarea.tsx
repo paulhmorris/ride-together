@@ -23,9 +23,11 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             name={name}
             rows={6}
             aria-invalid={fieldError ? true : undefined}
-            aria-describedby={`${name}-error`}
+            aria-describedby={`${name}-error ${
+              props["aria-describedby"] ?? ""
+            }`}
             className={classNames(
-              "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+              "block w-full rounded-md border-gray-300 shadow-sm placeholder:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
               props.className
             )}
           />
