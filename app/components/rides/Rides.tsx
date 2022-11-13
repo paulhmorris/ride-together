@@ -3,7 +3,7 @@ import { Link } from "@remix-run/react";
 import type { RideWithClubAndRiders } from "~/routes/rides";
 import { Ride } from ".";
 
-export function Rides({ rides }: RideWithClubAndRiders) {
+export function Rides({ rides }: { rides: Array<RideWithClubAndRiders> }) {
   if (rides === null) {
     return (
       <p className="mt-12 text-lg text-gray-500">

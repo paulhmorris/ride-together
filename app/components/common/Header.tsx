@@ -9,7 +9,7 @@ export function Header() {
     <header className="fixed inset-x-0 top-0 z-10 h-24 w-full bg-white py-6 text-base font-medium">
       <div className="mx-auto grid max-w-[1200px] auto-cols-[1fr] grid-cols-[0.5fr_1fr_0.5fr] items-center justify-between gap-4">
         <Link to="/" className="group">
-          <h1 className="flex items-center gap-2 text-2xl font-black uppercase">
+          <h1 className="flex items-center gap-2 whitespace-nowrap text-2xl font-black uppercase">
             <FireIcon className="h-8 w-8 transition delay-500 duration-500 group-hover:text-red-700" />{" "}
             ride together
           </h1>

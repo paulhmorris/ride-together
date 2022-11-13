@@ -14,7 +14,7 @@ export function Document({ children }: { children: ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="relative flex min-h-full flex-col bg-white font-inter text-slate-800">
+      <body className="relative flex min-h-full flex-col bg-white font-inter text-slate-800 dark:bg-gray-800 dark:text-gray-50">
         {children}
         <ScrollRestoration />
         <Scripts />

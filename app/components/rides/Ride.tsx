@@ -1,18 +1,12 @@
 import { Transition } from "@headlessui/react";
-import type { Club, Ride as RideType, User } from "@prisma/client";
 import { Link, useFetcher } from "@remix-run/react";
 import { Fragment } from "react";
+import { convertKmToMiles, formatNumber } from "~/lib/formatters";
 import { useOptionalUser } from "~/lib/utils";
+import type { RideWithClubAndRiders } from "~/routes/rides";
 import { Button } from "../common";
 
-export const Ride = ({
-  ride,
-}: {
-  ride: RideType & {
-    club: Club | null;
-    riders: User[];
-  };
-}) => {
+export const Ride = ({ ride }: { ride: RideWithClubAndRiders }) => {
   const fetcher = useFetcher();
   const user = useOptionalUser();
 
@@ -28,11 +22,18 @@ export const Ride = ({
     >
       <li
         key={ride.id}
-        className="flex max-w-sm flex-col overflow-hidden rounded-lg border border-gray-200 bg-white text-sm transition hover:shadow-md"
+        className="flex max-w-lg flex-col overflow-hidden rounded-lg border border-gray-200 bg-white text-sm shadow transition"
       >
         <div className="bg-gradient-to-br from-indigo-300 p-8">
           <h2 className="text-3xl font-bold">{ride.name}</h2>
-          <p className="mt-1 text-xl font-medium">1.2 miles away</p>
+          {ride.kmAway && (
+            <>
+              <p className="mt-1 text-lg font-medium">
+                {`${formatNumber(ride.kmAway)}km away`}
+              </p>
+              <p>{`${formatNumber(convertKmToMiles(ride.kmAway))}mi away`}</p>
+            </>
+          )}
           {/* {ride.description && <p>{ride.description}</p>} */}
         </div>
         <div className="px-8 pt-6">

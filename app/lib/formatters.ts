@@ -15,6 +15,20 @@ export const formatCurrency = (
   return formattedValue;
 };
 
+export const formatNumber = (number: number) => {
+  return new Intl.NumberFormat().format(number);
+};
+
+export const convertKmToMiles = (distance: number) => {
+  const ratio = 0.621371;
+  return Math.round(distance * ratio * 100) / 100;
+};
+
+export const convertMilesToKm = (distance: number) => {
+  const ratio = 1.60934;
+  return Math.round(distance * ratio * 100) / 100;
+};
+
 export function formatAsDateWithTime(date: Date | string | null) {
   if (!date) return date;
   return dayjs(date).format("M/D/YYYY h:mma");

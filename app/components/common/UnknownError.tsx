@@ -28,7 +28,7 @@ export const UnknownError = ({ error }: { error?: Error }) => {
             <p className="font-bold">
               Message: <span className="font-normal">{error?.message}</span>
             </p>
-            <pre className="mt-2 rounded bg-gray-200 p-3">
+            <pre className="mt-2 whitespace-pre-wrap rounded bg-gray-200 p-3">
               <code>{error?.stack}</code>
             </pre>
           </div>
