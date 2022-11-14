@@ -1,9 +1,12 @@
+import { RadioGroup } from "@headlessui/react";
 import { ShieldCheckIcon } from "@heroicons/react/24/solid";
 import { Form, useSearchParams, useSubmit } from "@remix-run/react";
 import type { ReactNode } from "react";
 import { useState } from "react";
-import { getPosition } from "~/lib/utils";
+import { classNames, getPosition } from "~/lib/utils";
 import { Button, Input, Select } from "../common";
+
+const unitOptions = [{ name: "Mi" }, { name: "Km" }];
 
 export function RidesHeader({ children }: { children?: ReactNode }) {
   const submit = useSubmit();
@@ -11,11 +14,16 @@ export function RidesHeader({ children }: { children?: ReactNode }) {
   const longitude = searchParams.get("longitude") ?? undefined;
   const latitude = searchParams.get("latitude") ?? undefined;
   const radius = searchParams.get("radius") ?? undefined;
+
+  const [unit, setUnit] = useState<typeof unitOptions[0]>(unitOptions[0]);
   const [loadingLocation, setLoadingLocation] = useState(false);
   const [location, setLocation] = useState<{
     longitude: number | undefined;
     latitude: number | undefined;
-  }>({ longitude: Number(longitude), latitude: Number(latitude) });
+  }>({
+    longitude: Number(longitude ?? null),
+    latitude: Number(latitude ?? null),
+  });
 
   async function setPosition() {
     setLoadingLocation(true);
@@ -23,11 +31,11 @@ export function RidesHeader({ children }: { children?: ReactNode }) {
       const {
         coords: { latitude, longitude },
       } = await getPosition();
-      setLocation({ longitude, latitude });
       submit(
         { longitude: longitude.toString(), latitude: latitude.toString() },
         { method: "get" }
       );
+      setLocation({ longitude, latitude });
     } catch (e) {
       console.error(e);
     } finally {
@@ -41,9 +49,10 @@ export function RidesHeader({ children }: { children?: ReactNode }) {
       <Form
         method="get"
         action="/rides?index"
+        className="mx-auto max-w-md"
         onChange={(e) => submit(e.currentTarget)}
       >
-        <div className="flex h-full items-stretch justify-center gap-2">
+        <div className="flex h-full items-stretch justify-between gap-2">
           <input type="hidden" name="longitude" value={location?.longitude} />
           <input type="hidden" name="latitude" value={location?.latitude} />
           <Input
@@ -67,20 +76,63 @@ export function RidesHeader({ children }: { children?: ReactNode }) {
             </Button>
           </div>
         </div>
-        <div className="max-w-xs">
-          <Select
-            name="radius"
-            label="Radius"
-            defaultValue={radius?.toString()}
-          >
-            <option value="">None</option>
-            <option value="5">5mi</option>
-            <option value="10">10mi</option>
-            <option value="25">25mi</option>
-            <option value="50">50mi</option>
-            <option value="100">100mi</option>
-          </Select>
-        </div>
+        {!!location.longitude && !!location.latitude && (
+          <div className="mt-4 flex h-full items-center gap-2">
+            <div className="flex-1">
+              <Select
+                name="radius"
+                label="Radius"
+                disabled={loadingLocation}
+                defaultValue={radius}
+              >
+                <option value="">None</option>
+                <option value="5">5mi</option>
+                <option value="10">10mi</option>
+                <option value="25">25mi</option>
+                <option value="50">50mi</option>
+                <option value="100">100mi</option>
+              </Select>
+            </div>
+            <div className="flex-shrink">
+              <fieldset
+                disabled={loadingLocation}
+                className="disabled:pointer-events-none disabled:opacity-50"
+              >
+                <legend className="text-sm font-medium">Change units</legend>
+                <RadioGroup
+                  value={unit}
+                  name="unit"
+                  onChange={setUnit}
+                  className="mt-1 h-full"
+                >
+                  <div className="grid grid-cols-2 gap-3">
+                    {unitOptions.map((option) => (
+                      <RadioGroup.Option
+                        key={option.name}
+                        value={option}
+                        className={({ active, checked }) =>
+                          classNames(
+                            active
+                              ? "ring-2 ring-indigo-500 ring-offset-2"
+                              : "",
+                            checked
+                              ? "border-transparent bg-indigo-500 text-white"
+                              : "border-gray-200 bg-white text-gray-900 hover:bg-gray-50",
+                            "flex cursor-pointer items-center justify-center rounded-md border p-2.5 font-medium uppercase transition duration-75 focus:outline-none sm:flex-1"
+                          )
+                        }
+                      >
+                        <RadioGroup.Label as="span">
+                          {option.name}
+                        </RadioGroup.Label>
+                      </RadioGroup.Option>
+                    ))}
+                  </div>
+                </RadioGroup>
+              </fieldset>
+            </div>
+          </div>
+        )}
       </Form>
     </div>
   );

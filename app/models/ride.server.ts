@@ -45,9 +45,9 @@ export async function getNearbyRides(
     SELECT r.Id,
       ST_Distance(r.coords, ${point}::geography)::text "distanceAway"
     FROM "Ride" r
-    WHERE ST_DWithin(r.coords, ${point}::geography, ${
-    radiusInMeters ? radiusInMeters : 1000000
-  })
+    WHERE ST_DWithin(
+      r.coords, ${point}::geography,
+      ROUND(${radiusInMeters ? radiusInMeters : 1000000}, 2))
     ORDER BY r.coords <-> ${point}::geography;
   `;
 

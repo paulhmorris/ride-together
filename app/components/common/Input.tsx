@@ -18,7 +18,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           htmlFor={name}
           className={classNames(
             "block text-sm font-medium",
-            hideLabel && "sr-only"
+            hideLabel && "sr-only",
+            props.disabled && "opacity-50"
           )}
         >
           {label}

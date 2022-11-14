@@ -28,7 +28,7 @@ export function Rides({ rides }: { rides: Array<RideWithClubAndRiders> }) {
   }
 
   return (
-    <ul className="grid w-full max-w-5xl gap-8 sm:grid-cols-3">
+    <ul className="grid w-full gap-8 sm:grid-cols-3">
       {rides.map((ride) => (
         <Ride key={ride.id} ride={ride} />
       ))}

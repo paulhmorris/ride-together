@@ -6,7 +6,7 @@ export function Header() {
   const user = useOptionalUser();
 
   return (
-    <header className="fixed inset-x-0 top-0 z-10 h-24 w-full bg-white py-6 text-base font-medium">
+    <header className="fixed inset-x-0 top-0 z-10 h-24 w-full bg-white px-8 py-6 text-base font-medium">
       <div className="mx-auto grid max-w-[1200px] auto-cols-[1fr] grid-cols-[0.5fr_1fr_0.5fr] items-center justify-between gap-4">
         <Link to="/" className="group">
           <h1 className="flex items-center gap-2 whitespace-nowrap text-2xl font-black uppercase">

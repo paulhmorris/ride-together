@@ -21,7 +21,6 @@ export const loader: LoaderFunction = async ({ request }) => {
   const longitude = url.searchParams.get("longitude") ?? null;
   const latitude = url.searchParams.get("latitude") ?? null;
   const radius = url.searchParams.get("radius") ?? null;
-  console.log({ longitude, latitude, radius });
 
   if (!longitude || !latitude) return json({ rides: [] });
 
@@ -51,7 +50,7 @@ export default function RidesPage() {
   const { rides } = useLoaderData() as unknown as LoaderData;
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="mx-auto flex max-w-5xl flex-col items-center">
       <RidesHeader />
       <Rides rides={rides} />
     </div>
