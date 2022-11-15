@@ -1,5 +1,5 @@
 import type { Club, Prisma, User } from "@prisma/client";
-import { prisma } from "~/db.server";
+import { prisma } from "~/lib/db.server";
 
 export function getClubById(id: Club["id"]) {
   return prisma.club.findFirst({

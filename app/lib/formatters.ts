@@ -5,13 +5,13 @@ export const formatCurrency = (
   decimals: 0 | 2 = 2
 ): string | undefined => {
   if (value === "" || value === null || value === undefined) return;
-  const decimalPlaces = decimals ? decimals : +value % 1 !== 0 ? 2 : 0;
+  const decimalPlaces = decimals ? decimals : Number(value) % 1 !== 0 ? 2 : 0;
   const formattedValue = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: decimalPlaces,
     maximumFractionDigits: decimalPlaces,
-  }).format(+value);
+  }).format(Number(value));
   return formattedValue;
 };
 
@@ -20,13 +20,13 @@ export const formatNumber = (number: number): string => {
 };
 
 export const convertKmToMiles = (distance: number): number => {
-  const ratio = 0.621371;
-  return +(distance * ratio);
+  const ratio = 0.62;
+  return distance * ratio;
 };
 
 export const convertMilesToKm = (distance: number): number => {
-  const ratio = 1.60934;
-  return +(distance * ratio).toFixed(2);
+  const ratio = 1.61;
+  return distance * ratio;
 };
 
 export function formatDate(date: Date, template?: string) {
