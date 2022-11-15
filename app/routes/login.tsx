@@ -81,7 +81,7 @@ export default function LoginPage() {
   }, [actionData]);
 
   return (
-    <main className="flex flex-grow flex-col items-center justify-center">
+    <main className="flex flex-grow flex-col items-center sm:pt-24">
       <div className="mx-auto w-full max-w-md">
         <h1 className="mb-4">Login</h1>
         <Form method="post" className="space-y-6" noValidate>

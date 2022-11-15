@@ -4,7 +4,7 @@ import { json } from "@remix-run/node";
 import { useCatch, useLoaderData } from "@remix-run/react";
 import { Page404, Page500, UnknownError } from "~/components/common";
 import { Rides, RidesHeader } from "~/components/rides";
-import { prisma } from "~/db.server";
+import { prisma } from "~/lib/db.server";
 import { getNearbyRides } from "~/models/ride.server";
 
 export type RideWithClubAndRiders = Ride & {
@@ -20,12 +20,13 @@ export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const longitude = url.searchParams.get("longitude") ?? null;
   const latitude = url.searchParams.get("latitude") ?? null;
-  const radius = url.searchParams.get("radius") ?? null;
+  const radiusParam = url.searchParams.get("radius") ?? null;
 
   if (!longitude || !latitude) return json({ rides: [] });
 
   if (typeof longitude === "string" && typeof latitude === "string") {
-    // TODO: Update when PostGIS support comes native in Prisma
+    // TODO: Update this fugly thing when PostGIS support comes native in Prisma
+    const radius = Number(Number(radiusParam).toFixed(2));
     const nearbyRides = await getNearbyRides(latitude, longitude, radius);
     if (nearbyRides.length === 0) {
       return json({ rides: null });
@@ -37,7 +38,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       include: { club: true, riders: true },
       take: 10,
     });
-    // Hate this
+    // Hate this -- adding a distance field to the rides
     const ridesWithDistance = rides.map((ride) => {
       const nearbyRide = nearbyRides.find((r) => r.id === ride.id);
       return { ...ride, kmAway: nearbyRide?.kmAway };

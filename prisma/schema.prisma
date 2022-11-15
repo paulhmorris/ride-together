@@ -17,12 +17,18 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   role      UserRole  @default(USER)
+  // unit      Unit      @default(Imperial)
 
   clubs            Club[]
   joinedRides      Ride[]            @relation(name: "joinedRides")
   createdRides     Ride[]            @relation(name: "createdRides")
   clubJoinRequests ClubJoinRequest[]
 }
+
+// enum Unit {
+//   Metric
+//   Imperial
+// }
 
 enum UserRole {
   USER

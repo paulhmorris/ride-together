@@ -3,7 +3,7 @@ import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import { prisma } from "~/db.server";
+import { prisma } from "~/lib/db.server";
 
 type LoaderData = {
   ride: Ride;

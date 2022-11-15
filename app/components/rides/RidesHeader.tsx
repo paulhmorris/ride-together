@@ -1,26 +1,20 @@
-import { RadioGroup } from "@headlessui/react";
 import { ShieldCheckIcon } from "@heroicons/react/24/solid";
 import { Form, useSearchParams, useSubmit } from "@remix-run/react";
-import type { ReactNode } from "react";
 import { useState } from "react";
-import { classNames, getPosition } from "~/lib/utils";
+import { getPosition } from "~/lib/utils";
 import { Button, Input, Select } from "../common";
 
-const unitOptions = [{ name: "Mi" }, { name: "Km" }];
+type LonLat = Pick<GeolocationCoordinates, "longitude" | "latitude">;
 
-export function RidesHeader({ children }: { children?: ReactNode }) {
+export function RidesHeader() {
   const submit = useSubmit();
   const [searchParams] = useSearchParams();
   const longitude = searchParams.get("longitude") ?? undefined;
   const latitude = searchParams.get("latitude") ?? undefined;
   const radius = searchParams.get("radius") ?? undefined;
 
-  const [unit, setUnit] = useState<typeof unitOptions[0]>(unitOptions[0]);
   const [loadingLocation, setLoadingLocation] = useState(false);
-  const [location, setLocation] = useState<{
-    longitude: number | undefined;
-    latitude: number | undefined;
-  }>({
+  const [location, setLocation] = useState<LonLat>({
     longitude: Number(longitude ?? null),
     latitude: Number(latitude ?? null),
   });
@@ -64,26 +58,33 @@ export function RidesHeader({ children }: { children?: ReactNode }) {
             disabled
           />
           <span className="my-auto text-gray-500">or</span>
-          <div>
+          <div className="flex-1">
             <Button
               className="h-full"
               type="button"
               title="We do not store or sell your location information"
               onClick={setPosition}
-              disabled={loadingLocation}
+              disabled={Boolean(longitude && latitude) || loadingLocation}
             >
-              Use my location <ShieldCheckIcon className="ml-2 h-5 w-5" />
+              {loadingLocation ? (
+                "Locating..."
+              ) : (
+                <span className="inline-flex">
+                  <span>Use my location</span>
+                  <ShieldCheckIcon className="ml-2 h-5 w-5" />
+                </span>
+              )}
             </Button>
           </div>
         </div>
-        {!!location.longitude && !!location.latitude && (
+        {Boolean(location.longitude) && Boolean(location.latitude) && (
           <div className="mt-4 flex h-full items-center gap-2">
             <div className="flex-1">
               <Select
                 name="radius"
                 label="Radius"
                 disabled={loadingLocation}
-                defaultValue={radius}
+                value={radius}
               >
                 <option value="">None</option>
                 <option value="5">5mi</option>
@@ -93,7 +94,7 @@ export function RidesHeader({ children }: { children?: ReactNode }) {
                 <option value="100">100mi</option>
               </Select>
             </div>
-            <div className="flex-shrink">
+            {/* <div className="flex-shrink">[
               <fieldset
                 disabled={loadingLocation}
                 className="disabled:pointer-events-none disabled:opacity-50"
@@ -130,7 +131,7 @@ export function RidesHeader({ children }: { children?: ReactNode }) {
                   </div>
                 </RadioGroup>
               </fieldset>
-            </div>
+            </div>] */}
           </div>
         )}
       </Form>

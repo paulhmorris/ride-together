@@ -6,7 +6,7 @@ interface ButtonProps extends ComponentPropsWithoutRef<"button"> {
 }
 
 const buttonStyles = {
-  base: "inline-flex items-center disabled:opacity-40 transition duration-100 focus:outline-none shadow-sm select-none",
+  base: "inline-flex w-full items-center disabled:opacity-40 transition duration-100 focus:outline-none shadow-sm select-none",
   primary:
     "justify-center rounded-md border border-transparent bg-indigo-500 px-4 py-3 text-base font-medium text-white enabled:hover:bg-indigo-600 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
   secondary:

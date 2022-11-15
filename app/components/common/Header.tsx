@@ -21,16 +21,23 @@ export function Header() {
           <Link to="/clubs" className="p-3 hover:text-rose-800">
             Clubs
           </Link>
-          <Link to="/clubs" className="p-3 hover:text-rose-800">
+          {/* <Link to="/clubs" className="p-3 hover:text-rose-800">
             Shop
-          </Link>
+          </Link> */}
         </nav>
         <nav className="flex items-center justify-end gap-8">
           {user ? (
             <>
-              <Link to={`/users/${user.id}`}>{user.email}</Link>
+              <Link
+                to={`/users/${user.id}`}
+                className="-mr-3 p-3 hover:text-rose-800"
+              >
+                {user.email}
+              </Link>
               <Form action="/logout" method="post">
-                <button type="submit">Logout</button>
+                <button type="submit" className="hover:text-rose-800">
+                  Logout
+                </button>
               </Form>
             </>
           ) : (

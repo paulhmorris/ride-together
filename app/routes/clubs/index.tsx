@@ -8,6 +8,8 @@ import { classNames, useOptionalUser } from "~/lib/utils";
 import { getAllClubs, sendJoinRequest } from "~/models/club.server";
 import { requireUserId } from "~/session.server";
 
+// TODO: Redo the tabs using routes!
+
 export const action: ActionFunction = async ({ request }) => {
   const userId = await requireUserId(request);
   const formData = await request.formData();

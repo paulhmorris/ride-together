@@ -4,7 +4,7 @@ import { json, redirect } from "@remix-run/node";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { Button, Input, Select } from "~/components/common";
-import { prisma } from "~/db.server";
+import { prisma } from "~/lib/db.server";
 import { createRide } from "~/models/ride.server";
 import { requireUserId } from "~/session.server";
 
@@ -24,8 +24,8 @@ export const action: ActionFunction = async ({ request }) => {
   const rideData: Prisma.RideUncheckedCreateInput = {
     name,
     startsAt: new Date(startsAt),
-    duration: +duration,
-    distance: +distance,
+    duration: Number(duration),
+    distance: Number(distance),
     creatorId: userId,
   };
 
