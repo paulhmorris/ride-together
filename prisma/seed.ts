@@ -29,6 +29,7 @@ async function seed() {
 
   await prisma.ride.deleteMany().catch(() => {});
   await prisma.club.deleteMany().catch(() => {});
+  await prisma.pace.deleteMany().catch(() => {});
 
   const hashedPassword = await bcrypt.hash("password", 10);
 
@@ -40,6 +41,16 @@ async function seed() {
       role: "SUPERADMIN",
       password: { create: { hash: hashedPassword } },
     },
+  });
+
+  await prisma.pace.createMany({
+    data: [
+      { speedRange: "10-12", actualAvgSpeed: 11 },
+      { speedRange: "12-15", actualAvgSpeed: 13 },
+      { speedRange: "15-17", actualAvgSpeed: 16 },
+      { speedRange: "17-21", actualAvgSpeed: 19 },
+      { speedRange: "21+", actualAvgSpeed: 21 },
+    ],
   });
 
   for (let i = 0; i < 100; i++) {

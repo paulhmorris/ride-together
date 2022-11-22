@@ -1,8 +1,14 @@
+-- Add PostGIS
+CREATE EXTENSION IF NOT EXISTS postgis;
+
+-- CreateEnum
+CREATE TYPE "Unit" AS ENUM ('Metric', 'Imperial');
+
 -- CreateEnum
 CREATE TYPE "UserRole" AS ENUM ('USER', 'ADMIN', 'SUPERADMIN');
 
 -- CreateEnum
-CREATE TYPE "ClubJoinRequestStatus" AS ENUM ('SENT', 'APPROVED', 'REJECTED');
+CREATE TYPE "ClubJoinRequestStatus" AS ENUM ('SENT', 'APPROVED', 'REJECTED', 'RESCINDED');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -14,6 +20,7 @@ CREATE TABLE "User" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "role" "UserRole" NOT NULL DEFAULT 'USER',
+    "unit" "Unit" NOT NULL DEFAULT 'Imperial',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -25,6 +32,18 @@ CREATE TABLE "Password" (
 );
 
 -- CreateTable
+CREATE TABLE "PasswordReset" (
+    "id" SERIAL NOT NULL,
+    "token" TEXT NOT NULL,
+    "sentOn" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "PasswordReset_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Ride" (
     "id" TEXT NOT NULL,
     "name" TEXT,
@@ -33,15 +52,22 @@ CREATE TABLE "Ride" (
     "startsAt" TIMESTAMP(3),
     "duration" INTEGER,
     "distance" DOUBLE PRECISION,
-    "startLat" DOUBLE PRECISION,
-    "startLon" DOUBLE PRECISION,
-    "endLat" DOUBLE PRECISION,
-    "endLon" DOUBLE PRECISION,
+    "paceId" INTEGER NOT NULL,
     "clubId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "coords" geometry(Point, 4326),
 
     CONSTRAINT "Ride_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Pace" (
+    "id" SERIAL NOT NULL,
+    "speedRange" TEXT NOT NULL,
+    "actualAvgSpeed" INTEGER NOT NULL,
+
+    CONSTRAINT "Pace_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -90,6 +116,9 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "Password_userId_key" ON "Password"("userId");
 
 -- CreateIndex
+CREATE INDEX "location_idx" ON "Ride" USING GIST ("coords");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "ClubJoinRequest_userId_clubId_key" ON "ClubJoinRequest"("userId", "clubId");
 
 -- CreateIndex
@@ -108,7 +137,13 @@ CREATE INDEX "_ClubToUser_B_index" ON "_ClubToUser"("B");
 ALTER TABLE "Password" ADD CONSTRAINT "Password_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "PasswordReset" ADD CONSTRAINT "PasswordReset_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Ride" ADD CONSTRAINT "Ride_creatorId_fkey" FOREIGN KEY ("creatorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Ride" ADD CONSTRAINT "Ride_paceId_fkey" FOREIGN KEY ("paceId") REFERENCES "Pace"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Ride" ADD CONSTRAINT "Ride_clubId_fkey" FOREIGN KEY ("clubId") REFERENCES "Club"("id") ON DELETE SET NULL ON UPDATE CASCADE;

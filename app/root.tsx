@@ -10,7 +10,7 @@ import { Page404, Page500, UnknownError } from "~/components/common";
 import { Document } from "./components/Document";
 import { RootLayout } from "./components/layouts/RootLayout";
 
-import { getUser } from "./session.server";
+import { getUser } from "./lib/session.server";
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 
 // @ts-expect-error this doesn't like the crossOrigin boolean

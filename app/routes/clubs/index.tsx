@@ -1,12 +1,10 @@
 import { randImg } from "@ngneat/falso";
-import type { Club, ClubJoinRequest, User } from "@prisma/client";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useFetcher, useLoaderData } from "@remix-run/react";
-import { Button, Link } from "~/components/common";
-import { classNames, useOptionalUser } from "~/lib/utils";
+import { useLoaderData } from "@remix-run/react";
+import { Link } from "~/components/common";
+import { requireUserId } from "~/lib/session.server";
 import { getAllClubs, sendJoinRequest } from "~/models/club.server";
-import { requireUserId } from "~/session.server";
 
 // TODO: Redo the tabs using routes!
 
@@ -26,10 +24,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 type LoaderData = {
-  clubs: (Club & {
-    members: User[];
-    joinRequests: ClubJoinRequest[];
-  })[];
+  clubs: Awaited<ReturnType<typeof getAllClubs>>;
 };
 
 export const loader: LoaderFunction = async () => {
@@ -39,16 +34,12 @@ export const loader: LoaderFunction = async () => {
 
 export default function ClubsIndex() {
   const { clubs } = useLoaderData<LoaderData>();
-  const user = useOptionalUser();
-  const fetcher = useFetcher();
 
   return (
     <div className="flex flex-col items-center">
       <h1 className="mb-12">Find a club</h1>
       <ul className="w-full max-w-6xl space-y-4">
         {clubs.map((club) => {
-          const hasOpenRequest =
-            user && club.joinRequests.some((req) => req.userId === user.id);
           return (
             <li
               key={club.id}
@@ -67,30 +58,10 @@ export default function ClubsIndex() {
               </div>
               <Link
                 to={`/clubs/${club.id}`}
-                className="col-span-2 text-center text-gray-500"
+                className="col-span-4 text-center text-gray-500"
               >
                 Info
               </Link>
-              <div className="col-span-2 text-right">
-                {user ? (
-                  <fetcher.Form method="post" className="col-span-1">
-                    <input type="hidden" name="clubId" value={club.id} />
-                    <Button
-                      type="submit"
-                      className={classNames(
-                        "w-full",
-                        hasOpenRequest && "text-gray-500"
-                      )}
-                      variant="link"
-                      disabled={hasOpenRequest}
-                    >
-                      {hasOpenRequest ? "Requested" : "Request to join"}
-                    </Button>
-                  </fetcher.Form>
-                ) : (
-                  <Link to="/join">Sign up to join</Link>
-                )}
-              </div>
             </li>
           );
         })}

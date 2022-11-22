@@ -12,6 +12,7 @@ interface InputProps extends ComponentPropsWithoutRef<"input"> {
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ name, label, description, fieldError, hideLabel, ...props }, ref) => {
+    const isDisabled = props.disabled || props.readOnly;
     return (
       <div>
         <label
@@ -19,7 +20,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           className={classNames(
             "block text-sm font-medium",
             hideLabel && "sr-only",
-            props.disabled && "opacity-50"
+            isDisabled && "pointer-events-none opacity-50"
           )}
         >
           {label}
@@ -34,7 +35,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             aria-invalid={fieldError ? true : undefined}
             aria-describedby={`${name}-error ${name}-description`}
             className={classNames(
-              "block w-full rounded-md border border-gray-200 shadow-sm transition duration-75 placeholder:text-gray-300 focus:border-indigo-300 focus:ring-2 focus:ring-indigo-500 disabled:pointer-events-none disabled:opacity-50",
+              "block w-full rounded-md border border-gray-200 shadow-sm transition duration-75 placeholder:text-gray-300 focus:border-rose-100 focus:ring-2 focus:ring-rose-300",
+              isDisabled && "pointer-events-none opacity-50",
               fieldError && "focus:border-red-600 focus:ring-red-600",
               props.className
             )}

@@ -12,10 +12,7 @@ type LoaderData = {
 export const loader: LoaderFunction = async ({ params }) => {
   invariant(params.userId, "Expected userId parameter");
   const user = await prisma.user.findFirst({ where: { id: params.userId } });
-
-  if (!user) {
-    throw new Response("User not found", { status: 404 });
-  }
+  if (!user) throw new Response("User not found", { status: 404 });
 
   return json<LoaderData>({ user });
 };
@@ -24,7 +21,7 @@ export default function RidePage() {
   const { user } = useLoaderData<LoaderData>();
   return (
     <div>
-      <h1>User Page</h1>
+      <h1>Public User Page</h1>
       <p>Viewing user {user.id}</p>
       <p>{user.email}</p>
     </div>

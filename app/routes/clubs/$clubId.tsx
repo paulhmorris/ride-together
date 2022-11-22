@@ -1,7 +1,7 @@
 import { Tab } from "@headlessui/react";
 import { ClockIcon, HomeIcon, UserGroupIcon } from "@heroicons/react/24/solid";
 import type { Club, Ride, User } from "@prisma/client";
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
@@ -13,8 +13,8 @@ import {
   ClubTitle,
 } from "~/components/clubs";
 import { TabTitle } from "~/components/common";
+import { requireUserId } from "~/lib/session.server";
 import { getClubById } from "~/models/club.server";
-import { requireUserId } from "~/session.server";
 
 export type ClubWithMembersAndRides = {
   club: Club & {
@@ -23,10 +23,9 @@ export type ClubWithMembersAndRides = {
   };
 };
 
-export const loader: LoaderFunction = async ({ request, params }) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
   invariant(params.clubId, "Expected clubId parameter");
   const club = await getClubById(params.clubId);
-
   if (!club) throw new Response("Club not found", { status: 404 });
 
   // Private club logic

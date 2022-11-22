@@ -28,10 +28,7 @@ export function Header() {
         <nav className="flex items-center justify-end gap-8">
           {user ? (
             <>
-              <Link
-                to={`/users/${user.id}`}
-                className="-mr-3 p-3 hover:text-rose-800"
-              >
+              <Link to={`/account`} className="-mr-3 p-3 hover:text-rose-800">
                 {user.email}
               </Link>
               <Form action="/logout" method="post">

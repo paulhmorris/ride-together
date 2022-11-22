@@ -12,10 +12,7 @@ type LoaderData = {
 export const loader: LoaderFunction = async ({ params }) => {
   invariant(params.rideId, "Expected rideId parameter");
   const ride = await prisma.ride.findFirst({ where: { id: params.rideId } });
-
-  if (!ride) {
-    throw new Response("Ride not found", { status: 404 });
-  }
+  if (!ride) throw new Response("Ride not found", { status: 404 });
 
   return json<LoaderData>({ ride });
 };

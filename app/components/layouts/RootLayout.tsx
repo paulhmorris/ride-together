@@ -5,7 +5,7 @@ export function RootLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <Header />
-      <div className="flex h-full flex-grow flex-col px-8 pt-32 pb-24">
+      <div className="mx-auto flex w-full max-w-screen-lg flex-grow flex-col items-stretch px-8 pb-24 pt-24 sm:px-0 sm:pt-56">
         {children}
       </div>
     </>

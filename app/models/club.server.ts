@@ -23,6 +23,26 @@ export function getAllClubs() {
   });
 }
 
+export function getClubsByUser(userId: User["id"]) {
+  return prisma.club.findMany({
+    where: {
+      members: { some: { id: userId } },
+    },
+    include: {
+      joinRequests: {
+        where: { userId },
+      },
+      rides: {
+        where: {
+          riders: {
+            some: { id: userId },
+          },
+        },
+      },
+    },
+  });
+}
+
 export function createClub(
   userId: User["id"],
   { ...rest }: Prisma.ClubUncheckedCreateInput
@@ -37,6 +57,21 @@ export function createClub(
   });
 }
 
+// Club Join Requests
+export function getJoinRequestsByUser(userId: User["id"]) {
+  return prisma.clubJoinRequest.findMany({
+    where: { userId },
+    include: { club: true },
+  });
+}
+
+export function getJoinRequestsByClub(clubId: Club["id"]) {
+  return prisma.clubJoinRequest.findMany({
+    where: { clubId },
+    include: { club: true },
+  });
+}
+
 export function sendJoinRequest(userId: User["id"], clubId: Club["id"]) {
   return prisma.clubJoinRequest.create({
     data: { userId, clubId, status: "SENT" },
@@ -44,23 +79,16 @@ export function sendJoinRequest(userId: User["id"], clubId: Club["id"]) {
 }
 
 export function cancelJoinRequest(userId: User["id"], clubId: Club["id"]) {
-  return prisma.clubJoinRequest.deleteMany({
+  return prisma.clubJoinRequest.updateMany({
     where: { userId, clubId },
+    data: { status: "RESCINDED", closedOn: new Date() },
   });
 }
 
 export function acceptJoinRequest(userId: User["id"], clubId: Club["id"]) {
-  return prisma.club.update({
-    where: { id: clubId },
-    data: {
-      members: { connect: { id: userId } },
-      joinRequests: {
-        updateMany: {
-          where: { userId, clubId },
-          data: { status: "APPROVED", closedOn: new Date() },
-        },
-      },
-    },
+  return prisma.clubJoinRequest.updateMany({
+    where: { userId, clubId },
+    data: { status: "APPROVED", closedOn: new Date() },
   });
 }
 

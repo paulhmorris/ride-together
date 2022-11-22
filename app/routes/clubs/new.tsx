@@ -3,8 +3,8 @@ import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import invariant from "tiny-invariant";
 import { NewClubForm } from "~/components/clubs";
+import { requireUserId } from "~/lib/session.server";
 import { createClub } from "~/models/club.server";
-import { requireUserId } from "~/session.server";
 
 export const action: ActionFunction = async ({ request }) => {
   const userId = await requireUserId(request);

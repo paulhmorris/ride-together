@@ -33,4 +33,8 @@
   label {
     @apply select-none;
   }
+
+  form {
+    @apply w-full;
+  }
 }

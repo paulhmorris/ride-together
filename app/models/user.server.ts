@@ -1,7 +1,9 @@
-import type { Password, User } from "@prisma/client";
+import type { Password, PasswordReset, User } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import dayjs from "dayjs";
 
 import { prisma } from "~/lib/db.server";
+import { sendPasswordResetEmail } from "~/lib/email.server";
 
 export type { User } from "@prisma/client";
 
@@ -26,6 +28,43 @@ export async function createUser(email: User["email"], password: string) {
         },
       },
     },
+  });
+}
+
+export async function resetPassword(
+  token: PasswordReset["token"],
+  userId: User["id"],
+  password: string
+) {
+  // Validate token
+  const dbToken = await prisma.passwordReset.findFirst({ where: { token } });
+  if (!dbToken) throw new Error("Invalid token");
+
+  // Validate that found token belongs to user who received email
+  if (dbToken.userId !== userId) throw new Error("User ids do not match");
+
+  // Make sure token isn't expired
+  const isExpired = new Date().getTime() > dbToken?.expiresAt.getTime();
+  if (isExpired) throw new Error("Token expired");
+
+  // Update password
+  const hashedPassword = await bcrypt.hash(password, 10);
+  return prisma.user.update({
+    where: { id: dbToken.userId },
+    data: {
+      password: {
+        update: {
+          hash: hashedPassword,
+        },
+      },
+    },
+  });
+}
+
+export function updateUser(data: Partial<User>) {
+  return prisma.user.update({
+    where: { id: data.id },
+    data: data,
   });
 }
 
@@ -60,4 +99,18 @@ export async function verifyLogin(
   const { password: _password, ...userWithoutPassword } = userWithPassword;
 
   return userWithoutPassword;
+}
+
+export async function sendPasswordReset(email: User["email"]) {
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (user) {
+    const reset = await prisma.passwordReset.create({
+      data: {
+        userId: user.id,
+        expiresAt: dayjs().add(1, "day").toDate(),
+      },
+    });
+    // Send reset email to user
+    return sendPasswordResetEmail(reset.token, user.id);
+  }
 }

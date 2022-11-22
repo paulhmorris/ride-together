@@ -17,30 +17,41 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   role      UserRole  @default(USER)
-  // unit      Unit      @default(Imperial)
+  unit      Unit      @default(Imperial)
 
   clubs            Club[]
   joinedRides      Ride[]            @relation(name: "joinedRides")
   createdRides     Ride[]            @relation(name: "createdRides")
   clubJoinRequests ClubJoinRequest[]
+  PasswordReset    PasswordReset[]
 }
 
-// enum Unit {
-//   Metric
-//   Imperial
-// }
+model Password {
+  hash   String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String @unique
+}
+
+model PasswordReset {
+  id        Int      @id @default(autoincrement())
+  token     String   @default(cuid())
+  sentOn    DateTime @default(now())
+  expiresAt DateTime
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+}
+
+enum Unit {
+  Metric
+  Imperial
+}
 
 enum UserRole {
   USER
   ADMIN
   SUPERADMIN
-}
-
-model Password {
-  hash String
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String @unique
 }
 
 model Ride {
@@ -54,8 +65,8 @@ model Ride {
   startsAt  DateTime?
   duration  Int?
   distance  Float?
-  // pace      Pace      @relation(fields: [paceId], references: [id])
-  // paceId    Int
+  pace      Pace?     @relation(fields: [paceId], references: [id])
+  paceId    Int?
   club      Club?     @relation(fields: [clubId], references: [id])
   clubId    String?
   createdAt DateTime  @default(now())
@@ -66,12 +77,12 @@ model Ride {
   @@index([coords], name: "location_idx", type: Gist)
 }
 
-// model Pace {
-//   id         Int    @id @default(autoincrement())
-//   speedRange String
-//   avgSpeed   Int
-//   rides      Ride[]
-// }
+model Pace {
+  id             Int    @id @default(autoincrement())
+  speedRange     String
+  actualAvgSpeed Int    @unique
+  rides          Ride[]
+}
 
 model Club {
   id           String            @id @default(cuid())
@@ -105,4 +116,5 @@ enum ClubJoinRequestStatus {
   SENT
   APPROVED
   REJECTED
+  RESCINDED
 }

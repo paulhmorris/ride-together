@@ -5,8 +5,8 @@ import { Form, Link, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { Button, Input, Select } from "~/components/common";
 import { prisma } from "~/lib/db.server";
+import { requireUserId } from "~/lib/session.server";
 import { createRide } from "~/models/ride.server";
-import { requireUserId } from "~/session.server";
 
 export const action: ActionFunction = async ({ request }) => {
   const userId = await requireUserId(request);

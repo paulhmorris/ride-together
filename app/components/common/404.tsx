@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 
 export const Page404 = () => {
   return (
-    <div className="mt-18 mx-auto flex max-w-3xl flex-col items-center text-center">
+    <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
       <div className="-mb-4">
         <span className="text-[256px] font-bold text-gray-200">404</span>
       </div>

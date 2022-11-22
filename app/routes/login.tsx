@@ -4,13 +4,13 @@ import { Form, useActionData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
 import { Button, Checkbox, Input, Link } from "~/components/common";
 
+import { createUserSession, getUserId } from "~/lib/session.server";
 import { safeRedirect, validateEmail } from "~/lib/utils";
 import { verifyLogin } from "~/models/user.server";
-import { createUserSession, getUserId } from "~/session.server";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
-  if (userId) return redirect("/");
+  if (userId) return redirect("/account");
   return json({});
 }
 
@@ -67,7 +67,7 @@ export const meta: MetaFunction = () => {
 
 export default function LoginPage() {
   const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/";
+  const redirectTo = searchParams.get("redirectTo") || "/account";
   const actionData = useActionData<typeof action>();
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
@@ -81,42 +81,36 @@ export default function LoginPage() {
   }, [actionData]);
 
   return (
-    <main className="flex flex-grow flex-col items-center sm:pt-24">
-      <div className="mx-auto w-full max-w-md">
+    <main className="sm:pt-24">
+      <div className="mx-auto max-w-md">
         <h1 className="mb-4">Login</h1>
         <Form method="post" className="space-y-6" noValidate>
-          <div className="mt-1">
-            <Input
-              ref={emailRef}
-              name="email"
-              type="email"
-              label="Email Address"
-              autoComplete="email"
-              aria-invalid={actionData?.errors?.email ? true : undefined}
-              required
-              autoFocus={true}
-              fieldError={actionData?.errors?.email}
-            />
-          </div>
-
-          <div className="mt-1">
-            <Input
-              ref={passwordRef}
-              name="password"
-              type="password"
-              label="Password"
-              autoComplete="new-password"
-              aria-invalid={actionData?.errors?.password ? true : undefined}
-              required
-              fieldError={actionData?.errors?.password}
-            />
-          </div>
-
+          <Input
+            ref={emailRef}
+            name="email"
+            type="email"
+            label="Email Address"
+            autoComplete="email"
+            aria-invalid={actionData?.errors?.email ? true : undefined}
+            required
+            autoFocus={true}
+            fieldError={actionData?.errors?.email}
+          />
+          <Input
+            ref={passwordRef}
+            name="password"
+            type="password"
+            label="Password"
+            autoComplete="new-password"
+            aria-invalid={actionData?.errors?.password ? true : undefined}
+            required
+            fieldError={actionData?.errors?.password}
+          />
           <input type="hidden" name="redirectTo" value={redirectTo} />
+
           <Button className="w-full" type="submit">
             Login
           </Button>
-
           <div className="flex items-center justify-between">
             <Checkbox name="remember" label="Remember me" />
             <div className="text-center text-sm text-gray-500">

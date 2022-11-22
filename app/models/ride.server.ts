@@ -1,6 +1,25 @@
 import type { Prisma, Ride, User } from "@prisma/client";
+import dayjs from "dayjs";
 import { prisma } from "~/lib/db.server";
 import { convertMilesToKm } from "~/lib/formatters";
+
+export function getRidesByUser(userId: User["id"]) {
+  return prisma.ride.findMany({
+    where: { riders: { some: { id: userId } } },
+    include: { club: true },
+  });
+}
+
+export function getPastRidesByUser(userId: User["id"]) {
+  const today = dayjs().startOf("day").toDate();
+  return prisma.ride.findMany({
+    where: {
+      startsAt: { lte: today },
+      riders: { some: { id: userId } },
+    },
+    include: { club: true },
+  });
+}
 
 export function createRide({
   creatorId,

@@ -2,12 +2,12 @@ import { Link } from "@remix-run/react";
 
 export default function Index() {
   return (
-    <main className="mx-auto flex flex-grow flex-col px-4 sm:px-6 sm:pt-24 lg:px-8">
+    <main className="mx-auto flex flex-grow flex-col px-4 sm:px-6 lg:px-8">
       <div className="text-center">
-        <h2 className="mt-1 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+        <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
           Lorem ipsum dolor sit amet.
         </h2>
-        <p className="mx-auto mt-6 max-w-xl text-xl text-gray-500">
+        <p className="mx-auto mt-6 max-w-xl text-xl">
           The only platform for bike clubs. Find a group to ride with, join a
           club, or start your own.
         </p>
